@@ -1,15 +1,37 @@
 <template>
   <div class="hello">
     <input v-model.number="operand1" />
-    <input v-model.number="operand2"/>
+    <input v-model.number="operand2" />
     = {{ result }}
-    <div>
+    <div class = "blockmain">
       <button @click="calculate('+')">+</button>
       <button @click="calculate('-')">-</button>
       <button @click="calculate('/')">/</button>
       <button @click="calculate('*')">*</button>
       <button @click="calculate('pow')">X<sup>y</sup></button>
       <button @click="calculate('div')">div</button>
+    </div>
+    <div>
+      <input type="checkbox" id="checkbox" v-model="checked">
+      <label for="checkbox">Отобразить экранную клавиатуру</label>
+    </div>
+    <div v-if="checked">
+      <div>
+        <button
+          v-for="numb in numbers"
+          :key="numb"
+          @click="setnum(numb)"
+          >{{ numb }}</button>
+          <button
+          @click="delnum"
+          >&larr;</button>
+      </div>
+      <div>
+        <input type="radio" id="one" value="1" v-model="picked" >
+        <label for="one">Операнд 1</label>
+        <input type="radio" id="two" value="2" v-model="picked" >
+        <label for="two">Операнд 2</label>
+      </div>
     </div>
   </div>
 </template>
@@ -19,7 +41,10 @@ export default {
   data: () => ({
     operand1: 0,
     operand2: 0,
-    result: 0
+    result: 0,
+    checked: false,
+    numbers: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+    picked: '1'
   }),
   props: {
   },
@@ -35,6 +60,22 @@ export default {
         div: () => Math.floor(operand1 / operand2)
       }
       this.result = calcop[op]()
+    },
+    setnum (n) {
+      if (this.picked === '1') {
+        this.operand1 += n
+        this.operand1 = +this.operand1
+      } else {
+        this.operand2 += n
+        this.operand2 = +this.operand2
+      }
+    },
+    delnum () {
+      if (this.picked === '1') {
+        this.operand1 = Math.floor(this.operand1 / 10)
+      } else {
+        this.operand2 = Math.floor(this.operand2 / 10)
+      }
     }
   }
 }
@@ -55,5 +96,8 @@ li {
 }
 a {
   color: #42b983;
+}
+.blockmain {
+  margin-bottom: 50px;
 }
 </style>
