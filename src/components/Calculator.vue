@@ -1,15 +1,18 @@
 <template>
   <div class="hello">
-    <input v-model.number="operand1" />
-    <input v-model.number="operand2" />
+    <input v-model.number="operand1" name="operand1" />
+    <input v-model.number="operand2" name="operand2" />
     = {{ result }}
     <div class = "blockmain">
-      <button @click="calculate('+')">+</button>
-      <button @click="calculate('-')">-</button>
-      <button @click="calculate('/')">/</button>
-      <button @click="calculate('*')">*</button>
-      <button @click="calculate('pow')">X<sup>y</sup></button>
-      <button @click="calculate('div')">div</button>
+      <button @click="calculate('+')" name="+">+</button>
+      <button @click="calculate('-')" name="-">-</button>
+      <button @click="calculate('/')" name="/">/</button>
+      <button @click="calculate('*')" name="*">*</button>
+      <button @click="calculate('pow')" name="pow">X<sup>y</sup></button>
+      <button @click="calculate('div')" name="div">div</button>
+    </div>
+    <div class="error" v-if="error">
+      {{ error }}
     </div>
     <div>
       <input type="checkbox" id="checkbox" v-model="checked">
@@ -20,9 +23,10 @@
         <button
           v-for="numb in numbers"
           :key="numb"
+          :data-number="numb"
           @click="setnum(numb)"
           >{{ numb }}</button>
-          <button
+          <button name="delnumber"
           @click="delnum"
           >&larr;</button>
       </div>
@@ -44,13 +48,19 @@ export default {
     result: 0,
     checked: false,
     numbers: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-    picked: '1'
+    picked: '1',
+    error: ''
   }),
   props: {
   },
   methods: {
     calculate (op) {
+      this.error = null
       const { operand1, operand2 } = this
+      if (op === '/' && operand2 === 0) {
+        this.error = 'Division by zero!'
+        return
+      }
       const calcop = {
         '+': () => operand1 + operand2,
         '-': () => operand1 - operand2,
@@ -99,5 +109,9 @@ a {
 }
 .blockmain {
   margin-bottom: 50px;
+}
+.error {
+  color: red;
+  font-size: 20px;
 }
 </style>
